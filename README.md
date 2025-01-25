@@ -1,1 +1,0 @@
-# SKS_Sekolah
