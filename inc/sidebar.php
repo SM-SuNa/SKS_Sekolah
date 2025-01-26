@@ -65,9 +65,21 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="?page=tambah_user" class="nav-link">
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>Tambah Pengguna</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="?page=manajemen_ruangan" class="nav-link">
                                 <i class="nav-icon fas fa-door-open"></i>
                                 <p>Manajemen Ruangan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="?page=tambah_ruangan" class="nav-link">
+                                <i class="nav-icon fas fa-door-open"></i>
+                                <p>tambah ruangan</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -102,15 +114,6 @@
         </aside>
 
         <!-- Content Wrapper -->
-        <div class="content-wrapper">
-            <div class="content">
-                <div class="container-fluid">
-                    <h1>Halaman Konten</h1>
-                    <p>Isi konten Anda di sini...</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Tambahkan JS AdminLTE -->
     <script src="path/to/jquery.min.js"></script>
