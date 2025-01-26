@@ -89,6 +89,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="?page=tambah_peminjaman" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-alt"></i>
+                                <p>Tambah Peminjaman</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="?page=laporan" class="nav-link">
                                 <i class="nav-icon fas fa-chart-line"></i>
                                 <p>Laporan</p>
