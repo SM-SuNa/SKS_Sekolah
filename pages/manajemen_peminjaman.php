@@ -92,7 +92,7 @@ $result = mysqli_query($conn, $query);
     </div>
 </div>
 
-<!-- Tambahkan script DataTables dan AdminLTE -->
+<!-- Tambahkan script AdminLTE dan DataTables dengan atribut defer -->
 <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -104,14 +104,24 @@ $result = mysqli_query($conn, $query);
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script defer src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
 <script defer src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        $("#userTable").DataTable({
+        $('#peminjamanTable').DataTable({
             responsive: true,
             lengthChange: true,
             autoWidth: false,
-            buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#userTable_wrapper .col-md-6:eq(0)');
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Indonesian.json'
+            },
+            buttons: [
+                { extend: 'copy', className: 'btn btn-info' },
+                { extend: 'csv', className: 'btn btn-success' },
+                { extend: 'excel', className: 'btn btn-primary' },
+                { extend: 'pdf', className: 'btn btn-danger' },
+                { extend: 'print', className: 'btn btn-warning' }
+            ]
+        }).buttons().container().appendTo('#peminjamanTable_wrapper .col-md-6:eq(0)');
     });
 </script>
 </body>
