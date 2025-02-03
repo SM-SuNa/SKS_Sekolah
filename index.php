@@ -7,7 +7,6 @@ include "inc/header.php";
   <?php
     include "inc/topnav.php";
     include "inc/sidebar.php";
-
     if(isset($_GET['page'])){
       include "pages/" . $_GET['page'] . ".php";
     } else {

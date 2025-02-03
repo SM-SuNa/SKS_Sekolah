@@ -8,26 +8,36 @@ if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    if ($username != "" && $password != "") {
-        $query = mysqli_query($koneksi, "SELECT * FROM users WHERE username = '$username' AND password = '$password'");
-        if ($data = mysqli_fetch_array($query)) {
-            $_SESSION['username'] = $data['username'];
-            $_SESSION['role'] = $data['role']; // Simpan peran dalam sesi
+    if (!empty($username) && !empty($password)) {
+        // Gunakan prepared statement
+        $stmt = $koneksi->prepare("SELECT * FROM user WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-            // Periksa peran dan arahkan sesuai
-            if ($data['role'] == 'user') {
-                header('location:index.php');
-            } elseif ($data['role'] == 'admin') {
-                header('location:admin.php');
+        if ($data = $result->fetch_assoc()) {
+            // Verifikasi password yang di-hash
+            if (password_verify($password, $data['password'])) {
+                $_SESSION['username'] = $data['username'];
+                $_SESSION['role'] = $data['role']; // Simpan role dalam session
+
+                // Periksa role dan arahkan sesuai
+                if ($data['role'] == 'admin') {
+                    header('location: index.php');
+                    exit;
+                } else {
+                    header('location: dasboard.php');
+                    exit;
+                }
             }
-        } else {
-            $login_failed = true; // Set variabel jika login gagal
         }
+        $login_failed = true; // Set jika login gagal
     } else {
-        $login_failed = true; // Set variabel jika username atau password kosong
+        $login_failed = true; // Set jika username atau password kosong
     }
 }
 ?>
+
 <style>
     .custom-image {
         width: 150px;
@@ -56,7 +66,7 @@ if (isset($_POST['submit'])) {
     </script>
 </head>
 
-<body>
+<body class="bg-gray-50">
 
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -69,21 +79,34 @@ if (isset($_POST['submit'])) {
                 <div>
                     <label for="username" class="block text-sm font-bold leading-6 text-gray-900">Username</label>
                     <div class="mt-2">
-                        <input id="username" name="username" type="username" autocomplete="username" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <input id="username" name="username" type="username" autocomplete="username" required
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     </div>
                 </div>
 
                 <div>
-                    <div class="flex items-center justify-between">
-                        <label for="password" class="block text-sm font-bold leading-6 text-gray-900">Password</label>
-                    </div>
+                    <label for="password" class="block text-sm font-bold leading-6 text-gray-900">Password</label>
                     <div class="mt-2">
-                        <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <input id="password" name="password" type="password" autocomplete="current-password" required
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     </div>
                 </div>
 
                 <div>
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" name="submit">Sign in</button>
+                    <label for="role" class="block text-sm font-bold leading-6 text-gray-900">Role</label>
+                    <div class="mt-2">
+                        <select id="role" name="role" required
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        name="submit">Sign in</button>
                 </div>
             </form>
 
@@ -98,7 +121,8 @@ if (isset($_POST['submit'])) {
     <div id="loginFailedModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white rounded-lg p-6 max-w-sm w-full">
             <h2 class="text-lg font-bold text-center">Login Gagal</h2>
-            <p class="mt-4 text-center">Username atau password salah. Pastikan Anda memasukkan <span class="text-red-500">Username</span> dan <span class="text-red-500">Password</span> yang benar.</p>
+            <p class="mt-4 text-center">Username atau password salah. Pastikan Anda memasukkan <span
+                    class="text-red-500">Username</span> dan <span class="text-red-500">Password</span> yang benar.</p>
             <div class="mt-6 flex justify-center">
                 <button onclick="closeModal()" class="rounded-md bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-500">Ok</button>
             </div>
