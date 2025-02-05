@@ -8,7 +8,8 @@ $query = "SELECT
             r.nama_ruangan AS nama_ruangan, 
             p.waktu_mulai, 
             p.selesai, 
-            p.status 
+            p.status,
+            p.keterangan
           FROM peminjaman p
           JOIN user u ON p.user_id = u.id
           JOIN ruangan r ON p.ruangan_id = r.id
@@ -18,7 +19,7 @@ $result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,9 +32,7 @@ $result = mysqli_query($conn, $query);
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-    <!-- Content Wrapper -->
     <div class="content-wrapper">
-        <!-- Content Header -->
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -44,7 +43,6 @@ $result = mysqli_query($conn, $query);
             </div>
         </div>
 
-        <!-- Main Content -->
         <section class="content">
             <div class="container-fluid">
                 <div class="card">
@@ -61,6 +59,7 @@ $result = mysqli_query($conn, $query);
                                     <th>Waktu Mulai</th>
                                     <th>Waktu Selesai</th>
                                     <th>Status</th>
+                                    <th>Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,6 +79,7 @@ $result = mysqli_query($conn, $query);
                                                 <span class="badge badge-warning"><?= ucfirst($row['status']) ?></span>
                                             <?php endif; ?>
                                         </td>
+                                        <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>
@@ -91,7 +91,6 @@ $result = mysqli_query($conn, $query);
     </div>
 </div>
 
-<!-- Tambahkan script DataTables dan AdminLTE -->
 <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
