@@ -30,7 +30,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="index.php" class="brand-link text-center">
-                <img src="dist/img/nusabot.png" alt="Nusabot Logo" width="30%">
+                <img src="dist/img/pin.jpg" alt="Nusabot Logo" width="30%">
             </a>
 
             <!-- Sidebar -->
