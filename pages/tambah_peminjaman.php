@@ -15,21 +15,22 @@ if (isset($_POST['submit'])) {
     $ruangan_id = $_POST['ruangan_id'];
     $waktu_mulai = $_POST['waktu_mulai'];
     $selesai = $_POST['selesai'];
-    $status = $_POST['status'];
+    $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']); // Mencegah SQL Injection
 
-    $queryInsert = "INSERT INTO peminjaman (user_id, ruangan_id, waktu_mulai, selesai, status) 
-                    VALUES ($user_id, $ruangan_id, '$waktu_mulai', '$selesai', '$status')";
+    // Status otomatis "pending"
+    $queryInsert = "INSERT INTO peminjaman (user_id, ruangan_id, waktu_mulai, selesai, status, keterangan) 
+                    VALUES ('$user_id', '$ruangan_id', '$waktu_mulai', '$selesai', 'pending', '$keterangan')";
 
     if (mysqli_query($conn, $queryInsert)) {
-        echo "<script>alert('Peminjaman berhasil ditambahkan!'); window.location.href='?page=manajemen_peminjaman';</script>";
+        echo "<script>alert('Peminjaman berhasil diajukan!'); window.location.href='?page=manajemen_peminjaman';</script>";
     } else {
-        echo "<script>alert('Gagal menambahkan peminjaman!');</script>";
+        echo "<script>alert('Gagal mengajukan peminjaman.');</script>";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,11 +46,7 @@ if (isset($_POST['submit'])) {
         <!-- Content Header -->
         <div class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0">Tambah Peminjaman</h1>
-                    </div>
-                </div>
+                <h1 class="m-0">Tambah Peminjaman</h1>
             </div>
         </div>
 
@@ -60,7 +57,7 @@ if (isset($_POST['submit'])) {
                     <div class="card-header">
                         <h3 class="card-title">Form Tambah Peminjaman</h3>
                     </div>
-                    <form method="POST" action="">
+                    <form method="POST">
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="user_id">Pilih User</label>
@@ -89,12 +86,8 @@ if (isset($_POST['submit'])) {
                                 <input type="datetime-local" name="selesai" id="selesai" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control" required>
-                                    <option value="pending">Pending</option>
-                                    <option value="diterima">Diterima</option>
-                                    <option value="ditolak">Ditolak</option>
-                                </select>
+                                <label for="keterangan">Keterangan</label>
+                                <textarea name="keterangan" id="keterangan" class="form-control" rows="3" placeholder="Masukkan keterangan tambahan..." required></textarea>
                             </div>
                         </div>
                         <div class="card-footer">

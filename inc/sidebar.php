@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="path/to/adminlte.min.css">
     <!-- FontAwesome untuk ikon -->
     <link rel="stylesheet" href="path/to/fontawesome.css">
-    <!-- Tambahkan CSS tambahan jika diperlukan -->
+    <!-- Tambahkan CSS tambahan ji.ka diperlukan -->
     <style>
         html, body {
             height: 100%;

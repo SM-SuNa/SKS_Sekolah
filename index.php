@@ -1,16 +1,25 @@
 <?php
+
 include "inc/header.php";
 ?>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
 
   <?php
+  
     include "inc/topnav.php";
     include "inc/sidebar.php";
-    if(isset($_GET['page'])){
-      include "pages/" . $_GET['page'] . ".php";
+
+    // Menentukan halaman yang ditampilkan
+    if (isset($_GET['page'])) {
+        $page = "pages/" . $_GET['page'] . ".php";
+        if (file_exists($page)) {
+            include $page;
+        } else {
+            echo "<h1>Halaman tidak ditemukan!</h1>";
+        }
     } else {
-      include "pages/home.php";
+        include "pages/home.php"; // Halaman default jika tidak ada parameter page
     }
 
     include "inc/footer.php";

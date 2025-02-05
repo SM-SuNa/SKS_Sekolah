@@ -3,7 +3,7 @@ include "koneksi.php";
 
 // Ambil semua data peminjaman
 $query = "SELECT peminjaman.id, user.username, ruangan.nama_ruangan, 
-                 peminjaman.waktu_mulai, peminjaman.selesai, peminjaman.status 
+                 peminjaman.waktu_mulai, peminjaman.selesai, peminjaman.status, peminjaman.keterangan 
           FROM peminjaman 
           JOIN user ON peminjaman.user_id = user.id 
           JOIN ruangan ON peminjaman.ruangan_id = ruangan.id";
@@ -11,7 +11,7 @@ $result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,6 +55,7 @@ $result = mysqli_query($conn, $query);
                                     <th>Waktu Mulai</th>
                                     <th>Waktu Selesai</th>
                                     <th>Status</th>
+                                    <th>Keterangan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -75,6 +76,7 @@ $result = mysqli_query($conn, $query);
                                                 <span class="badge badge-warning"><?= ucfirst($row['status']) ?></span>
                                             <?php endif; ?>
                                         </td>
+                                        <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                         <td>
                                             <a href="?page=edit_peminjaman&id=<?= $row['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
                                             <a href="?page=hapus_peminjaman&id=<?= $row['id'] ?>" 
