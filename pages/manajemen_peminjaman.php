@@ -16,17 +16,12 @@ $result = mysqli_query($conn, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Peminjaman</title>
-    <!-- Tambahkan link CSS AdminLTE -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap4.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-    <!-- Content Wrapper -->
     <div class="content-wrapper">
-        <!-- Content Header -->
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -36,8 +31,7 @@ $result = mysqli_query($conn, $query);
                 </div>
             </div>
         </div>
-
-        <!-- Main Content -->
+        
         <section class="content">
             <div class="container-fluid">
                 <div class="card">
@@ -69,17 +63,17 @@ $result = mysqli_query($conn, $query);
                                         <td><?= date('d-m-Y H:i', strtotime($row['selesai'])) ?></td>
                                         <td>
                                             <?php if ($row['status'] === 'diterima'): ?>
-                                                <span class="badge badge-success"><?= ucfirst($row['status']) ?></span>
+                                                <span class="badge badge-success">Diterima</span>
                                             <?php elseif ($row['status'] === 'ditolak'): ?>
-                                                <span class="badge badge-danger"><?= ucfirst($row['status']) ?></span>
+                                                <span class="badge badge-danger">Ditolak</span>
                                             <?php else: ?>
-                                                <span class="badge badge-warning"><?= ucfirst($row['status']) ?></span>
+                                                <span class="badge badge-warning">Menunggu</span>
                                             <?php endif; ?>
                                         </td>
                                         <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                         <td>
                                             <a href="?page=edit_peminjaman&id=<?= $row['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                            <a href="?page=hapus_peminjaman&id=<?= $row['id'] ?>" 
+                                            <a href="pages/hapus_peminjaman.php?id=<?= $row['id'] ?>&type=peminjaman" 
                                                class="btn btn-danger btn-sm" 
                                                onclick="return confirm('Yakin ingin menghapus peminjaman ini?')">Hapus</a>
                                         </td>
@@ -94,19 +88,10 @@ $result = mysqli_query($conn, $query);
     </div>
 </div>
 
-<!-- Tambahkan script AdminLTE dan DataTables dengan atribut defer -->
 <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-<script defer src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
-<script defer src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script defer src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap4.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-<script defer src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script defer src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         $('#peminjamanTable').DataTable({
@@ -115,15 +100,8 @@ $result = mysqli_query($conn, $query);
             autoWidth: false,
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Indonesian.json'
-            },
-            buttons: [
-                { extend: 'copy', className: 'btn btn-info' },
-                { extend: 'csv', className: 'btn btn-success' },
-                { extend: 'excel', className: 'btn btn-primary' },
-                { extend: 'pdf', className: 'btn btn-danger' },
-                { extend: 'print', className: 'btn btn-warning' }
-            ]
-        }).buttons().container().appendTo('#peminjamanTable_wrapper .col-md-6:eq(0)');
+            }
+        });
     });
 </script>
 </body>

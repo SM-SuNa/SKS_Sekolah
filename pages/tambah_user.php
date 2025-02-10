@@ -1,6 +1,8 @@
 <?php
 include "koneksi.php";
 
+$notif = ""; // Variabel untuk menyimpan notifikasi
+
 if (isset($_POST['tambah'])) {
     $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
@@ -8,21 +10,44 @@ if (isset($_POST['tambah'])) {
 
     $query = "INSERT INTO user (username, password, role) VALUES ('$username', '$password', '$role')";
     if (mysqli_query($conn, $query)) {
-        echo "<script>alert('User berhasil ditambahkan!'); window.location.href='?page=manajemen_pengguna';</script>";
+        $notif = "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'User berhasil ditambahkan!',
+                        confirmButtonColor: '#3085d6'
+                    }).then(() => {
+                        window.location.href='?page=manajemen_pengguna';
+                    });
+                });
+            </script>";
     } else {
-        echo "<script>alert('Gagal menambahkan user!');</script>";
+        $notif = "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat menambahkan user!',
+                        confirmButtonColor: '#d33'
+                    });
+                });
+            </script>";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah User</title>
     <link rel="stylesheet" href="adminlte/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -62,8 +87,13 @@ if (isset($_POST['tambah'])) {
     </div>
 </div>
 
+<!-- Tambahkan script -->
 <script src="adminlte/plugins/jquery/jquery.min.js"></script>
 <script src="adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="adminlte/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?= $notif; // Menampilkan notifikasi jika ada ?>
+
 </body>
 </html>

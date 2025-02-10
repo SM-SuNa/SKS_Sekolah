@@ -13,11 +13,33 @@ if (isset($_GET['id'])) {
     if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
     } else {
-        echo "<script>alert('Data user tidak ditemukan!'); window.location.href='?page=manajemen_pengguna';</script>";
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Data user tidak ditemukan!',
+                    confirmButtonColor: '#d33'
+                }).then(() => {
+                    window.location.href='?page=manajemen_pengguna';
+                });
+            });
+        </script>";
         exit;
     }
 } else {
-    echo "<script>alert('ID user tidak ditemukan!'); window.location.href='?page=manajemen_pengguna';</script>";
+    echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'ID user tidak ditemukan!',
+                confirmButtonColor: '#d33'
+            }).then(() => {
+                window.location.href='?page=manajemen_pengguna';
+            });
+        });
+    </script>";
     exit;
 }
 
@@ -35,15 +57,35 @@ if (isset($_POST['update'])) {
     }
 
     if (mysqli_query($conn, $query_update)) {
-        echo "<script>alert('Data user berhasil diperbarui!'); window.location.href='?page=manajemen_pengguna';</script>";
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Data user berhasil diperbarui!',
+                    confirmButtonColor: '#3085d6'
+                }).then(() => {
+                    window.location.href='?page=manajemen_pengguna';
+                });
+            });
+        </script>";
     } else {
-        echo "<script>alert('Gagal memperbarui data user!');</script>";
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan saat memperbarui data!',
+                    confirmButtonColor: '#d33'
+                });
+            });
+        </script>";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,6 +93,7 @@ if (isset($_POST['update'])) {
     <!-- Tambahkan link CSS AdminLTE -->
     <link rel="stylesheet" href="adminlte/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -104,9 +147,11 @@ if (isset($_POST['update'])) {
     </div>
 </div>
 
-<!-- Tambahkan script AdminLTE -->
+<!-- Tambahkan script -->
 <script src="adminlte/plugins/jquery/jquery.min.js"></script>
 <script src="adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="adminlte/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>
