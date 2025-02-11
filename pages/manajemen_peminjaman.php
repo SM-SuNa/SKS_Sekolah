@@ -18,6 +18,7 @@ $result = mysqli_query($conn, $query);
     <title>Manajemen Peminjaman</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -72,10 +73,11 @@ $result = mysqli_query($conn, $query);
                                         </td>
                                         <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                         <td>
-                                            <a href="?page=edit_peminjaman&id=<?= $row['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                            <a href="pages/hapus_peminjaman.php?id=<?= $row['id'] ?>&type=peminjaman" 
-                                               class="btn btn-danger btn-sm" 
-                                               onclick="return confirm('Yakin ingin menghapus peminjaman ini?')">Hapus</a>
+                                            <a href="?page=edit_peminjaman&id=<?= $row['id'] ?>" 
+                                               class="btn btn-warning btn-sm" 
+                                               onclick="confirmEdit(event, <?= $row['id'] ?>)">Edit</a>
+                                            <button class="btn btn-danger btn-sm" 
+                                                    onclick="confirmDelete(<?= $row['id'] ?>)">Hapus</button>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
@@ -102,7 +104,53 @@ $result = mysqli_query($conn, $query);
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Indonesian.json'
             }
         });
+
+        // Event listener langsung pada tombol edit
+        document.querySelectorAll('.btn-edit').forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); 
+                let id = this.getAttribute('data-id');
+                
+                Swal.fire({
+                    title: 'Edit Peminjaman',
+                    text: 'Anda akan mengedit data peminjaman ini. Lanjutkan?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Lanjutkan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `?page=edit_peminjaman&id=${id}`;
+                    }
+                });
+            });
+        });
+
+        // Event listener langsung pada tombol hapus
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function () {
+                let id = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: 'Data peminjaman akan dihapus!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `pages/hapus_peminjaman.php?id=${id}&type=peminjaman`;
+                    }
+                });
+            });
+        });
     });
 </script>
+
 </body>
 </html>

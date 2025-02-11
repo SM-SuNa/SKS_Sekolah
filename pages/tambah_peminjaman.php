@@ -1,8 +1,8 @@
 <?php
 include "koneksi.php";
 
-// Ambil data user untuk dropdown
-$queryUser = "SELECT id, username FROM user";
+// Ambil data user yang hanya memiliki role "user"
+$queryUser = "SELECT id, username FROM user WHERE role = 'user'";
 $resultUser = mysqli_query($conn, $queryUser);
 
 // Ambil data ruangan untuk dropdown
@@ -35,7 +35,7 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Peminjaman</title>
-    <!-- Tambahkan link CSS AdminLTE -->
+    <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="adminlte/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css">
 </head>
@@ -101,7 +101,7 @@ if (isset($_POST['submit'])) {
     </div>
 </div>
 
-<!-- Tambahkan script AdminLTE -->
+<!-- AdminLTE Scripts -->
 <script src="adminlte/plugins/jquery/jquery.min.js"></script>
 <script src="adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="adminlte/dist/js/adminlte.min.js"></script>
