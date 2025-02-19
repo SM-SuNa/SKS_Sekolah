@@ -53,7 +53,6 @@ $result = mysqli_query($conn, $query);
                                     <th>Waktu Selesai</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
-                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,13 +74,6 @@ $result = mysqli_query($conn, $query);
                                             <?php endif; ?>
                                         </td>
                                         <td><?= htmlspecialchars($row['keterangan']) ?></td>
-                                        <td>
-                                            <a href="?page=edit_peminjaman&id=<?= $row['id'] ?>" 
-                                               class="btn btn-warning btn-sm btn-edit" 
-                                               data-id="<?= $row['id'] ?>">Edit</a>
-                                            <button class="btn btn-danger btn-sm btn-delete" 
-                                                    data-id="<?= $row['id'] ?>">Hapus</button>
-                                        </td>
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>

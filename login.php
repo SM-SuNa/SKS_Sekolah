@@ -26,7 +26,7 @@ if (isset($_POST['submit'])) {
                     header('location: index.php');
                     exit;
                 } else {
-                    header('location: dasboard.php');
+                    header('location: user.php');
                     exit;
                 }
             }

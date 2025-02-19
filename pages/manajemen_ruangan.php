@@ -45,7 +45,6 @@ $result = mysqli_query($conn, $query);
                                     <th>Nama Ruangan</th>
                                     <th>Kapasitas</th>
                                     <th>Lokasi</th>
-                                    <th>Keterangan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -58,7 +57,6 @@ $result = mysqli_query($conn, $query);
                                         <td>{$row['nama_ruangan']}</td>
                                         <td>{$row['kapasitas']}</td>
                                         <td>{$row['lokasi']}</td>
-                                        <td>{$row['keterangan']}</td>
                                         <td>
                                             <a href='?page=edit_ruangan&id={$row['id']}' class='btn btn-warning btn-sm' onclick='confirmEdit(event, {$row['id']})'>Edit</a>
                                             <button class='btn btn-danger btn-sm' onclick='confirmDelete({$row['id']})'>Hapus</button>

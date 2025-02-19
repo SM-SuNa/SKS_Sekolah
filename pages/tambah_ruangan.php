@@ -48,10 +48,6 @@ include "koneksi.php";
                                 <label for="lokasi">Lokasi</label>
                                 <input type="text" name="lokasi" class="form-control" id="lokasi" placeholder="Masukkan lokasi ruangan" required>
                             </div>
-                            <div class="form-group">
-                                <label for="keterangan">Keterangan</label>
-                                <textarea name="keterangan" class="form-control" id="keterangan" rows="3" placeholder="Masukkan keterangan tambahan"></textarea>
-                            </div>
                         </div>
                         <div class="card-footer">
                             <button type="submit" name="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
@@ -74,9 +70,8 @@ if (isset($_POST['submit'])) {
     $nama_ruangan = $_POST['nama_ruangan'];
     $kapasitas = $_POST['kapasitas'];
     $lokasi = $_POST['lokasi'];
-    $keterangan = $_POST['keterangan'];
 
-    $query = "INSERT INTO ruangan (nama_ruangan, kapasitas, lokasi, keterangan) VALUES ('$nama_ruangan', '$kapasitas', '$lokasi', '$keterangan')";
+    $query = "INSERT INTO ruangan (nama_ruangan, kapasitas, lokasi) VALUES ('$nama_ruangan', '$kapasitas', '$lokasi')";
     
     if (mysqli_query($conn, $query)) {
         echo "<script>
