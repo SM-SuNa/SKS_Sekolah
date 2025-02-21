@@ -1,14 +1,16 @@
 <?php
 include "koneksi.php";
 
-$notif = ""; // Variabel untuk menyimpan notifikasi
+$notif = ""; // Variabel untuk notifikasi
 
 if (isset($_POST['tambah'])) {
+    $nama_lengkap = $_POST['nama_lengkap'];
     $username = $_POST['username'];
+    $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
     $role = $_POST['role'];
-
-    $query = "INSERT INTO user (username, password, role) VALUES ('$username', '$password', '$role')";
+    
+    $query = "INSERT INTO user (nama_lengkap, username, email, password, role) VALUES ('$nama_lengkap', '$username', '$email', '$password', '$role')";
     if (mysqli_query($conn, $query)) {
         $notif = "
             <script>
@@ -61,8 +63,16 @@ if (isset($_POST['tambah'])) {
                     <form method="POST" action="">
                         <div class="card-body">
                             <div class="form-group">
+                                <label for="nama_lengkap">Nama Lengkap</label>
+                                <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required>
+                            </div>
+                            <div class="form-group">
                                 <label for="username">Username</label>
                                 <input type="text" name="username" id="username" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" id="email" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>

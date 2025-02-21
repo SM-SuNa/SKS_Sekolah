@@ -1,8 +1,8 @@
 <?php
 include "koneksi.php";
 
-// Ambil semua data peminjaman, termasuk kapasitas
-$query = "SELECT peminjaman.id, user.username, ruangan.nama_ruangan, 
+// Ambil semua data peminjaman, termasuk kapasitas dan nama lengkap
+$query = "SELECT peminjaman.id, user.nama_lengkap, ruangan.nama_ruangan, 
                  ruangan.kapasitas, peminjaman.waktu_mulai, peminjaman.selesai, 
                  peminjaman.status, peminjaman.keterangan 
           FROM peminjaman 
@@ -46,7 +46,7 @@ $result = mysqli_query($conn, $query);
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Username</th>
+                                    <th>Nama Peminjam</th>
                                     <th>Ruangan</th>
                                     <th>Kapasitas</th>
                                     <th>Waktu Mulai</th>
@@ -59,7 +59,7 @@ $result = mysqli_query($conn, $query);
                                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
                                     <tr>
                                         <td><?= $row['id'] ?></td>
-                                        <td><?= $row['username'] ?></td>
+                                        <td><?= $row['nama_lengkap'] ?></td> <!-- Nama Peminjam -->
                                         <td><?= $row['nama_ruangan'] ?></td>
                                         <td><?= $row['kapasitas'] ?></td>
                                         <td><?= date('d-m-Y H:i', strtotime($row['waktu_mulai'])) ?></td>

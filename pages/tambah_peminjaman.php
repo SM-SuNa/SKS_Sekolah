@@ -1,14 +1,13 @@
 <?php
 include "koneksi.php";
 
-// Ambil daftar user untuk dropdown
-$queryUser = "SELECT id, nama_lengkap FROM user WHERE role = 'user'";
-$resultUser = mysqli_query($conn, $queryUser) or die("Query Error: " . mysqli_error($conn));
+// Ambil data user dengan role "user"
+$queryUser = "SELECT id, username FROM user WHERE role = 'user'";
+$resultUser = mysqli_query($conn, $queryUser);
 
-
-// Ambil daftar ruangan untuk dropdown
+// Ambil data ruangan
 $queryRuangan = "SELECT id, nama_ruangan, kapasitas FROM ruangan";
-$resultRuangan = mysqli_query($conn, $queryRuangan) or die("Query Error: " . mysqli_error($conn));
+$resultRuangan = mysqli_query($conn, $queryRuangan);
 
 // Proses tambah peminjaman
 if (isset($_POST['submit'])) {
@@ -18,22 +17,23 @@ if (isset($_POST['submit'])) {
     $selesai = mysqli_real_escape_string($conn, $_POST['selesai']);
     $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']);
 
-    // Ambil kapasitas ruangan
+    // Ambil kapasitas ruangan berdasarkan ID ruangan yang dipilih
     $queryKapasitas = "SELECT kapasitas FROM ruangan WHERE id = '$ruangan_id'";
     $resultKapasitas = mysqli_query($conn, $queryKapasitas);
-    $kapasitas = ($rowKapasitas = mysqli_fetch_assoc($resultKapasitas)) ? $rowKapasitas['kapasitas'] : 0;
+    $rowKapasitas = mysqli_fetch_assoc($resultKapasitas);
+    $kapasitas = $rowKapasitas['kapasitas']; // Simpan kapasitas ruangan
 
-    // Cek apakah ruangan sudah dipakai dalam rentang waktu tersebut
+    // Cek apakah ruangan sudah dipinjam di waktu tersebut
     $cekQuery = "SELECT * FROM peminjaman 
                  WHERE ruangan_id = '$ruangan_id' 
                  AND ('$waktu_mulai' BETWEEN waktu_mulai AND selesai 
-                 OR '$selesai' BETWEEN waktu_mulai AND selesai) 
-                 AND NOT ('$waktu_mulai' = selesai OR '$selesai' = waktu_mulai)";
+                 OR '$selesai' BETWEEN waktu_mulai AND selesai)";
     $resultCek = mysqli_query($conn, $cekQuery);
 
     if (mysqli_num_rows($resultCek) > 0) {
         echo "<script>alert('Ruangan sudah dipakai di waktu yang dipilih. Silakan pilih waktu lain.');</script>";
     } else {
+        // Simpan peminjaman dengan kapasitas yang sesuai
         $queryInsert = "INSERT INTO peminjaman (user_id, ruangan_id, waktu_mulai, selesai, status, keterangan, kapasitas) 
                         VALUES ('$user_id', '$ruangan_id', '$waktu_mulai', '$selesai', 'pending', '$keterangan', '$kapasitas')";
 
@@ -72,18 +72,16 @@ if (isset($_POST['submit'])) {
                     </div>
                     <form method="POST">
                         <div class="card-body">
-                            <!-- Pilih User -->
                             <div class="form-group">
-                                <label for="user_id">Nama Peminjam</label>
+                                <label for="user_id">Pilih User</label>
                                 <select name="user_id" id="user_id" class="form-control" required>
-                                    <option value="">-- Pilih Nama --</option>
+                                    <option value="">-- Pilih User --</option>
                                     <?php while ($user = mysqli_fetch_assoc($resultUser)): ?>
-                                        <option value="<?= $user['id'] ?>"><?= $user['nama_lengkap'] ?></option>
+                                        <option value="<?= $user['id'] ?>"><?= $user['username'] ?></option>
                                     <?php endwhile; ?>
                                 </select>
                             </div>
 
-                            <!-- Pilih Ruangan -->
                             <div class="form-group">
                                 <label for="ruangan_id">Pilih Ruangan</label>
                                 <select name="ruangan_id" id="ruangan_id" class="form-control" required>
@@ -96,25 +94,21 @@ if (isset($_POST['submit'])) {
                                 </select>
                             </div>
 
-                            <!-- Kapasitas Ruangan -->
                             <div class="form-group">
                                 <label for="kapasitas">Kapasitas Maksimal</label>
                                 <input type="text" id="kapasitas" class="form-control" readonly>
                             </div>
 
-                            <!-- Waktu Mulai -->
                             <div class="form-group">
                                 <label for="waktu_mulai">Waktu Mulai</label>
                                 <input type="datetime-local" name="waktu_mulai" id="waktu_mulai" class="form-control" required>
                             </div>
 
-                            <!-- Waktu Selesai -->
                             <div class="form-group">
                                 <label for="selesai">Waktu Selesai</label>
                                 <input type="datetime-local" name="selesai" id="selesai" class="form-control" required>
                             </div>
 
-                            <!-- Keterangan -->
                             <div class="form-group">
                                 <label for="keterangan">Keterangan</label>
                                 <textarea name="keterangan" id="keterangan" class="form-control" rows="3" required></textarea>
@@ -133,11 +127,35 @@ if (isset($_POST['submit'])) {
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="adminlte/dist/js/adminlte.min.js"></script>
+
 <script>
     $(document).ready(function () {
         $("#ruangan_id").change(function () {
             let kapasitas = $(this).find(':selected').data('kapasitas');
             $("#kapasitas").val(kapasitas ? kapasitas : '');
+        });
+
+        // Cek ketersediaan ruangan sebelum submit
+        $("form").on("submit", function (e) {
+            let ruangan_id = $("#ruangan_id").val();
+            let waktu_mulai = $("#waktu_mulai").val();
+            let selesai = $("#selesai").val();
+
+            if (ruangan_id && waktu_mulai && selesai) {
+                $.ajax({
+                    url: "cek_ketersediaan.php",
+                    method: "POST",
+                    data: { ruangan_id: ruangan_id, waktu_mulai: waktu_mulai, selesai: selesai },
+                    success: function (response) {
+                        if (response === "terpakai") {
+                            alert("Ruangan sudah dipakai di waktu yang dipilih. Silakan pilih waktu lain.");
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
         });
     });
 </script>

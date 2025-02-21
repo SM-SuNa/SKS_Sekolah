@@ -2,7 +2,7 @@
 include "koneksi.php";
 
 // Ambil data user dari database
-$query = "SELECT * FROM user";
+$query = "SELECT id, username, nama_lengkap, email, role FROM user";
 $result = mysqli_query($conn, $query);
 ?>
 
@@ -11,9 +11,11 @@ $result = mysqli_query($conn, $query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen User</title>
+    <title>Manajemen Pengguna</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap4.min.css">
@@ -28,7 +30,7 @@ $result = mysqli_query($conn, $query);
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Manajemen User</h1>
+                        <h1 class="m-0">Manajemen Pengguna</h1>
                     </div>
                 </div>
             </div>
@@ -38,14 +40,16 @@ $result = mysqli_query($conn, $query);
             <div class="container-fluid">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Daftar User</h3>
-                        <a href="?page=tambah_user" class="btn btn-success float-right">Tambah User</a>
+                        <h3 class="card-title">Daftar Pengguna</h3>
+                        <a href="?page=tambah_user" class="btn btn-success float-right">Tambah Pengguna</a>
                     </div>
                     <div class="card-body">
                         <table id="userTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>Email</th>
                                     <th>Username</th>
                                     <th>Role</th>
                                     <th>Aksi</th>
@@ -55,8 +59,10 @@ $result = mysqli_query($conn, $query);
                                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
                                     <tr>
                                         <td><?= $row['id'] ?></td>
-                                        <td><?= $row['username'] ?></td>
-                                        <td><?= $row['role'] ?></td>
+                                        <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
+                                        <td><?= htmlspecialchars($row['email']) ?></td>
+                                        <td><?= htmlspecialchars($row['username']) ?></td>
+                                        <td><?= htmlspecialchars($row['role']) ?></td>
                                         <td>
                                             <a href="?page=edit_user&id=<?= $row['id'] ?>&edit_success=1" class="btn btn-warning btn-sm">Edit</a>
                                             <button class="btn btn-danger btn-sm" onclick="confirmHapus(<?= $row['id'] ?>)">Hapus</button>
@@ -86,7 +92,7 @@ $result = mysqli_query($conn, $query);
             autoWidth: false,
         });
 
-        // Cek apakah ada parameter edit_success di URL
+        // Notifikasi sukses edit atau hapus
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('edit_success')) {
             Swal.fire({
