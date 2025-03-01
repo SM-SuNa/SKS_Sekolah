@@ -47,12 +47,13 @@ $result = mysqli_query($conn, $query);
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama Peminjam</th>
-                                    <th>Ruangan</th>
-                                    <th>Kapasitas</th>
+                                    <th>Nama Ruangan</th>
+                                    <th>Kapasitas Ruangan</th>
                                     <th>Waktu Mulai</th>
                                     <th>Waktu Selesai</th>
-                                    <th>Status</th>
                                     <th>Keterangan</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,6 +65,7 @@ $result = mysqli_query($conn, $query);
                                         <td><?= $row['kapasitas'] ?></td>
                                         <td><?= date('d-m-Y H:i', strtotime($row['waktu_mulai'])) ?></td>
                                         <td><?= date('d-m-Y H:i', strtotime($row['selesai'])) ?></td>
+                                        <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                         <td>
                                             <?php if ($row['status'] === 'diterima'): ?>
                                                 <span class="badge badge-success">Diterima</span>
@@ -73,7 +75,10 @@ $result = mysqli_query($conn, $query);
                                                 <span class="badge badge-warning">Menunggu</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td><?= htmlspecialchars($row['keterangan']) ?></td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm btn-delete" 
+                                                    data-id="<?= $row['id'] ?>">Batalkan</button>
+                                        </td>
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>
@@ -100,29 +105,6 @@ $result = mysqli_query($conn, $query);
             }
         });
 
-        // Konfirmasi edit
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', function (event) {
-                event.preventDefault(); 
-                let id = this.getAttribute('data-id');
-                
-                Swal.fire({
-                    title: 'Edit Peminjaman',
-                    text: 'Anda akan mengedit data peminjaman ini. Lanjutkan?',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Lanjutkan',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = `?page=edit_peminjaman&id=${id}`;
-                    }
-                });
-            });
-        });
-
         // Konfirmasi hapus
         document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', function () {
@@ -130,16 +112,27 @@ $result = mysqli_query($conn, $query);
 
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
-                    text: 'Data peminjaman akan dihapus!',
+                    text: 'Peminjaman ini akan dibatalkan dan tidak bisa dikembalikan!',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, Hapus!',
+                    confirmButtonText: 'Ya, Batalkan!',
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = `pages/hapus_peminjaman.php?id=${id}&type=peminjaman`;
+                        // Redirect ke proses hapus
+                        window.location.href = `page_user/hapus_peminjaman.php?id=${id}&type=peminjaman`;
+                        
+                        // Notifikasi sukses setelah penghapusan
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Peminjaman berhasil dibatalkan!',
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
+                        }, 500);
                     }
                 });
             });

@@ -5,12 +5,12 @@ include "koneksi.php";
 $queryUser = "SELECT id, nama_lengkap FROM user WHERE role = 'user'";
 $resultUser = mysqli_query($conn, $queryUser) or die("Query Error: " . mysqli_error($conn));
 
-
 // Ambil daftar ruangan untuk dropdown
 $queryRuangan = "SELECT id, nama_ruangan, kapasitas FROM ruangan";
 $resultRuangan = mysqli_query($conn, $queryRuangan) or die("Query Error: " . mysqli_error($conn));
 
 // Proses tambah peminjaman
+$notif = "";
 if (isset($_POST['submit'])) {
     $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
     $ruangan_id = mysqli_real_escape_string($conn, $_POST['ruangan_id']);
@@ -32,15 +32,15 @@ if (isset($_POST['submit'])) {
     $resultCek = mysqli_query($conn, $cekQuery);
 
     if (mysqli_num_rows($resultCek) > 0) {
-        echo "<script>alert('Ruangan sudah dipakai di waktu yang dipilih. Silakan pilih waktu lain.');</script>";
+        $notif = "Ruangan sudah dipakai di waktu yang dipilih. Silakan pilih waktu lain.";
     } else {
         $queryInsert = "INSERT INTO peminjaman (user_id, ruangan_id, waktu_mulai, selesai, status, keterangan, kapasitas) 
-                        VALUES ('$user_id', '$ruangan_id', '$waktu_mulai', '$selesai', 'pending', '$keterangan', '$kapasitas')";
+                        VALUES ('$user_id', '$ruangan_id', '$waktu_mulai', '$selesai', 'menunggu', '$keterangan', '$kapasitas')";
 
         if (mysqli_query($conn, $queryInsert)) {
-            echo "<script>alert('Peminjaman berhasil diajukan!'); window.location.href='?page=manajemen_peminjaman';</script>";
+            $notif = "Peminjaman berhasil diajukan!";
         } else {
-            echo "<script>alert('Gagal mengajukan peminjaman.');</script>";
+            $notif = "Gagal mengajukan peminjaman.";
         }
     }
 }
@@ -54,6 +54,7 @@ if (isset($_POST['submit'])) {
     <title>Tambah Peminjaman</title>
     <link rel="stylesheet" href="adminlte/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -72,7 +73,6 @@ if (isset($_POST['submit'])) {
                     </div>
                     <form method="POST">
                         <div class="card-body">
-                            <!-- Pilih User -->
                             <div class="form-group">
                                 <label for="user_id">Nama Peminjam</label>
                                 <select name="user_id" id="user_id" class="form-control" required>
@@ -83,7 +83,6 @@ if (isset($_POST['submit'])) {
                                 </select>
                             </div>
 
-                            <!-- Pilih Ruangan -->
                             <div class="form-group">
                                 <label for="ruangan_id">Pilih Ruangan</label>
                                 <select name="ruangan_id" id="ruangan_id" class="form-control" required>
@@ -96,25 +95,36 @@ if (isset($_POST['submit'])) {
                                 </select>
                             </div>
 
-                            <!-- Kapasitas Ruangan -->
                             <div class="form-group">
                                 <label for="kapasitas">Kapasitas Maksimal</label>
                                 <input type="text" id="kapasitas" class="form-control" readonly>
                             </div>
 
-                            <!-- Waktu Mulai -->
-                            <div class="form-group">
-                                <label for="waktu_mulai">Waktu Mulai</label>
-                                <input type="datetime-local" name="waktu_mulai" id="waktu_mulai" class="form-control" required>
+                            <!-- Perbaikan Tampilan Waktu Mulai & Selesai -->
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="waktu_mulai">Waktu Mulai</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input type="datetime-local" name="waktu_mulai" id="waktu_mulai" class="form-control" required>
+                                    </div>
+                                    <small class="form-text text-muted">Pilih tanggal dan waktu mulai peminjaman.</small>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="selesai">Waktu Selesai</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                        </div>
+                                        <input type="datetime-local" name="selesai" id="selesai" class="form-control" required>
+                                    </div>
+                                    <small class="form-text text-muted">Pilih tanggal dan waktu selesai peminjaman.</small>
+                                </div>
                             </div>
 
-                            <!-- Waktu Selesai -->
-                            <div class="form-group">
-                                <label for="selesai">Waktu Selesai</label>
-                                <input type="datetime-local" name="selesai" id="selesai" class="form-control" required>
-                            </div>
-
-                            <!-- Keterangan -->
                             <div class="form-group">
                                 <label for="keterangan">Keterangan</label>
                                 <textarea name="keterangan" id="keterangan" class="form-control" rows="3" required></textarea>
@@ -133,14 +143,19 @@ if (isset($_POST['submit'])) {
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     $(document).ready(function () {
+        let notif = "<?= $notif ?>";
+        if (notif) {
+            toastr.success(notif);
+        }
+
         $("#ruangan_id").change(function () {
             let kapasitas = $(this).find(':selected').data('kapasitas');
             $("#kapasitas").val(kapasitas ? kapasitas : '');
         });
     });
 </script>
-
 </body>
 </html>

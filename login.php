@@ -70,7 +70,7 @@ if (isset($_POST['submit'])) {
 
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img class="mx-auto custom-image" src="aset/ROOMTY.jpg" alt="Your Company">
+            <img class="mx-auto custom-image" src="assets/img/neper.png" alt="Your Company">
             <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in</h2>
         </div>
 
@@ -89,17 +89,6 @@ if (isset($_POST['submit'])) {
                     <div class="mt-2">
                         <input id="password" name="password" type="password" autocomplete="current-password" required
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                </div>
-
-                <div>
-                    <label for="role" class="block text-sm font-bold leading-6 text-gray-900">Role</label>
-                    <div class="mt-2">
-                        <select id="role" name="role" required
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                        </select>
                     </div>
                 </div>
 

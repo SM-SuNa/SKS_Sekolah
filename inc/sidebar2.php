@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdminLTE Sidebar</title>
+    <title>SMKN 1 Cirebon</title>
     <!-- Tambahkan CSS AdminLTE -->
     <link rel="stylesheet" href="path/to/adminlte.min.css">
     <!-- FontAwesome untuk ikon -->
@@ -156,13 +156,13 @@
                         <li class="nav-item">
                             <a href="?page=manajemen_peminjaman" class="nav-link">
                                 <i class="nav-icon fas fa-calendar-alt"></i>
-                                <p>Data</p>
+                                <p>Manajemen Peminjaman</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="?page=tambah_peminjaman" class="nav-link">
                                 <i class="nav-icon fas fa-calendar-alt"></i>
-                                <p>Pinjam</p>
+                                <p>Tambah Peminjaman</p>
                             </a>
                         </li>
                         <!-- Menu Pengaturan -->

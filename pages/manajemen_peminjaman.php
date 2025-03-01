@@ -51,8 +51,8 @@ $result = mysqli_query($conn, $query);
                                     <th>Kapasitas</th>
                                     <th>Waktu Mulai</th>
                                     <th>Waktu Selesai</th>
-                                    <th>Status</th>
                                     <th>Keterangan</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -65,6 +65,7 @@ $result = mysqli_query($conn, $query);
                                         <td><?= $row['kapasitas'] ?></td>
                                         <td><?= date('d-m-Y H:i', strtotime($row['waktu_mulai'])) ?></td>
                                         <td><?= date('d-m-Y H:i', strtotime($row['selesai'])) ?></td>
+                                        <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                         <td>
                                             <?php if ($row['status'] === 'diterima'): ?>
                                                 <span class="badge badge-success">Diterima</span>
@@ -74,7 +75,6 @@ $result = mysqli_query($conn, $query);
                                                 <span class="badge badge-warning">Menunggu</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                         <td>
                                             <a href="?page=edit_peminjaman&id=<?= $row['id'] ?>" 
                                                class="btn btn-warning btn-sm btn-edit" 
