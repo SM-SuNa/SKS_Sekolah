@@ -1,13 +1,21 @@
 <?php
-include "koneksi.php";
+include "koneksi.php"; 
 
-// Ambil semua data peminjaman, termasuk kapasitas dan nama lengkap
-$query = "SELECT peminjaman.id, user.nama_lengkap, ruangan.nama_ruangan, 
-                 ruangan.kapasitas, peminjaman.waktu_mulai, peminjaman.selesai, 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$loggedInUser = $_SESSION['username']; 
+
+$query = "SELECT peminjaman.id, user.username, user.nama_lengkap, 
+                 ruangan.nama_ruangan, ruangan.kapasitas, 
+                 peminjaman.waktu_mulai, peminjaman.selesai, 
                  peminjaman.status, peminjaman.keterangan 
           FROM peminjaman 
           JOIN user ON peminjaman.user_id = user.id 
-          JOIN ruangan ON peminjaman.ruangan_id = ruangan.id";
+          JOIN ruangan ON peminjaman.ruangan_id = ruangan.id"; // Semua data tetap ditampilkan
+
 $result = mysqli_query($conn, $query);
 ?>
 
@@ -17,8 +25,9 @@ $result = mysqli_query($conn, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Peminjaman</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="adminlte/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -60,15 +69,15 @@ $result = mysqli_query($conn, $query);
                                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
                                     <tr>
                                         <td><?= $row['id'] ?></td>
-                                        <td><?= $row['nama_lengkap'] ?></td> <!-- Nama Peminjam -->
-                                        <td><?= $row['nama_ruangan'] ?></td>
+                                        <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
+                                        <td><?= htmlspecialchars($row['nama_ruangan']) ?></td>
                                         <td><?= $row['kapasitas'] ?></td>
                                         <td><?= date('d-m-Y H:i', strtotime($row['waktu_mulai'])) ?></td>
                                         <td><?= date('d-m-Y H:i', strtotime($row['selesai'])) ?></td>
                                         <td><?= htmlspecialchars($row['keterangan']) ?></td>
-                                        <td>
+                                        <td class="status-cell">
                                             <?php if ($row['status'] === 'diterima'): ?>
-                                                <span class="badge badge-success">Diterima</span>
+                                                <span class="badge badge-success" data-username="<?= $row['username'] ?>">Diterima</span>
                                             <?php elseif ($row['status'] === 'ditolak'): ?>
                                                 <span class="badge badge-danger">Ditolak</span>
                                             <?php else: ?>
@@ -76,8 +85,11 @@ $result = mysqli_query($conn, $query);
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <button class="btn btn-danger btn-sm btn-delete" 
-                                                    data-id="<?= $row['id'] ?>">Batalkan</button>
+                                            <?php if ($row['username'] === $loggedInUser): ?> 
+                                                <button class="btn btn-danger btn-sm btn-delete" 
+                                                        data-id="<?= $row['id'] ?>">Batalkan</button>
+                                            <?php else: ?>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
@@ -94,51 +106,67 @@ $result = mysqli_query($conn, $query);
 <script defer src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        $('#peminjamanTable').DataTable({
-            responsive: true,
-            lengthChange: true,
-            autoWidth: false,
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Indonesian.json'
-            }
-        });
+document.addEventListener("DOMContentLoaded", function () {
+    let loggedInUser = "<?= htmlspecialchars($loggedInUser) ?>"; 
 
-        // Konfirmasi hapus
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function () {
-                let id = this.getAttribute('data-id');
+    // Inisialisasi DataTables
+    $('#peminjamanTable').DataTable({
+        responsive: true,
+        lengthChange: true,
+        autoWidth: false,
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/Indonesian.json'
+        }
+    });
 
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: 'Peminjaman ini akan dibatalkan dan tidak bisa dikembalikan!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, Batalkan!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Redirect ke proses hapus
-                        window.location.href = `page_user/hapus_peminjaman.php?id=${id}&type=peminjaman`;
-                        
-                        // Notifikasi sukses setelah penghapusan
-                        setTimeout(() => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Peminjaman berhasil dibatalkan!',
-                                showConfirmButton: false,
-                                timer: 2000
-                            });
-                        }, 500);
-                    }
-                });
+    // Notifikasi Peminjaman Diterima
+    document.querySelectorAll(".badge-success").forEach(el => {
+        let peminjamUsername = el.getAttribute("data-username");
+
+        if (peminjamUsername === loggedInUser) {
+            let adminWA = "6281286443099"; 
+            let pesan = `Halo admin, saya ${loggedInUser} ingin konfirmasi peminjaman ruangan.`;
+            let linkWA = `https://wa.me/${adminWA}?text=${encodeURIComponent(pesan)}`;
+
+            Swal.fire({
+                title: "Peminjaman Diterima!",
+                text: "Silakan konfirmasi ke admin melalui WhatsApp.",
+                icon: "success",
+                showCancelButton: true,
+                confirmButtonText: "Hubungi Admin",
+                cancelButtonText: "Tutup"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open(linkWA, "_blank");
+                }
+            });
+        }
+    });
+
+    // Konfirmasi Hapus Peminjaman
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function () {
+            let id = this.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Peminjaman ini akan dibatalkan dan tidak bisa dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Batalkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `page_user/hapus_peminjaman.php?id=${id}&type=peminjaman`;
+                }
             });
         });
     });
+});
 </script>
-
 </body>
 </html>
