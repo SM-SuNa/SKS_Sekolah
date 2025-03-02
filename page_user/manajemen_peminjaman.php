@@ -25,9 +25,8 @@ $result = mysqli_query($conn, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Peminjaman</title>
-    <link rel="stylesheet" href="adminlte/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="adminlte/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="hold-transition sidebar-mini">
