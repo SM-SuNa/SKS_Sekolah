@@ -5,7 +5,6 @@ if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
-
 $loggedInUser = $_SESSION['username']; 
 
 $query = "SELECT peminjaman.id, user.username, user.nama_lengkap, 
@@ -14,7 +13,7 @@ $query = "SELECT peminjaman.id, user.username, user.nama_lengkap,
                  peminjaman.status, peminjaman.keterangan 
           FROM peminjaman 
           JOIN user ON peminjaman.user_id = user.id 
-          JOIN ruangan ON peminjaman.ruangan_id = ruangan.id"; // Semua data tetap ditampilkan
+          JOIN ruangan ON peminjaman.ruangan_id = ruangan.id";
 
 $result = mysqli_query($conn, $query);
 ?>
@@ -50,6 +49,7 @@ $result = mysqli_query($conn, $query);
                         <a href="?page=tambah_peminjaman" class="btn btn-success float-right">Tambah Peminjaman</a>
                     </div>
                     <div class="card-body">
+                    <li class="nav-item">
                         <table id="peminjamanTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -78,7 +78,12 @@ $result = mysqli_query($conn, $query);
                                             <?php if ($row['status'] === 'diterima'): ?>
                                                 <span class="badge badge-success" data-username="<?= $row['username'] ?>">Diterima</span>
                                             <?php elseif ($row['status'] === 'ditolak'): ?>
-                                                <span class="badge badge-danger">Ditolak</span>
+                                                <span class="badge badge-danger" 
+                                                      data-username="<?= $row['username'] ?>" 
+                                                      data-alasan="<?= htmlspecialchars($row['keterangan']) ?>"
+                                                      data-ruangan="<?= htmlspecialchars($row['nama_ruangan']) ?>">
+                                                    Ditolak
+                                                </span>
                                             <?php else: ?>
                                                 <span class="badge badge-warning">Menunggu</span>
                                             <?php endif; ?>
@@ -87,7 +92,6 @@ $result = mysqli_query($conn, $query);
                                             <?php if ($row['username'] === $loggedInUser): ?> 
                                                 <button class="btn btn-danger btn-sm btn-delete" 
                                                         data-id="<?= $row['id'] ?>">Batalkan</button>
-                                            <?php else: ?>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
@@ -140,6 +144,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (result.isConfirmed) {
                     window.open(linkWA, "_blank");
                 }
+            });
+        }
+    });
+
+   // Notifikasi Peminjaman Ditolak
+   document.querySelectorAll(".badge-danger").forEach(el => {
+        let peminjamUsername = el.getAttribute("data-username");
+        let alasanPenolakan = el.getAttribute("data-alasan");
+        let namaRuangan = el.getAttribute("data-ruangan");
+
+        if (peminjamUsername === loggedInUser) {
+            Swal.fire({
+                title: "Peminjaman Ditolak!",
+                text: `Maaf, permintaan peminjaman ruangan ${namaRuangan} Anda kami tolak. Dengan alasan: ${alasanPenolakan}. Jika Anda ingin meminjam ruangan ini, Anda bisa langsung datang ke SMK 1 CIREBON.`,
+                icon: "error",
+                confirmButtonText: "Mengerti"
             });
         }
     });

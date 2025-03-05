@@ -4,9 +4,9 @@ include "koneksi.php"; // Pastikan koneksi database sudah benar
 if (isset($_POST['submit'])) {
     $nama = $_POST['nama'];
     $username = $_POST['username'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $email = $_POST['email'];
-    $role = "user"; // Semua pendaftar otomatis jadi user
+    $role = "user"; 
 
     // Cek apakah email sudah digunakan
     $check_email = mysqli_query($koneksi, "SELECT * FROM user WHERE email = '$email'");

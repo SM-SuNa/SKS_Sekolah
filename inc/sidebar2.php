@@ -41,7 +41,8 @@
                     session_start(); // Pastikan session dimulai di awal
 
                     // Cek apakah user sudah login, jika tidak, tampilkan default
-                    $username = isset($_SESSION['username']) ? $_SESSION['username'] : "Guest";
+                    $loggedInUser = isset($_SESSION['username']);
+                    $username = $loggedInUser ? $_SESSION['username'] : "Guest";
                     ?>
 
                     <div class="profile-container">
@@ -50,10 +51,16 @@
                             <span class="profile-name"><?= htmlspecialchars($username); ?></span>
                             <i class="fas fa-caret-down"></i>
                         </div>
+                        <?php if (!$loggedInUser): ?>
+                            <div class="alert alert-warning">
+                                <strong>Perhatian:</strong> Anda belum login. Beberapa fitur mungkin tidak tersedia.
+                            </div>
+                        <?php endif; ?>
                         <ul class="profile-dropdown" id="profile-menu">
                             <li><a href="user.php"><i class="fas fa-tachometer-alt"></i> Kembali ke home</a></li>
                             <li><a href="profil.php"><i class="fas fa-user"></i> Profil</a></li>
                             <li class="logout-item"><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            <li class="login-item"><a href="login.php"><i class="fas fa-sign-out-alt"></i> Login</a></li>
                         </ul>
                     </div>
                     <!-- CSS -->
@@ -147,12 +154,13 @@
                         </div>
                     </div>
                 </div>
+                
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Menu Utama -->
-                        
+                        <li class="nav-item">
                         <li class="nav-item">
                             <a href="?page=manajemen_peminjaman" class="nav-link">
                                 <i class="nav-icon fas fa-calendar-alt"></i>
@@ -165,7 +173,7 @@
                                 <p>Tambah Peminjaman</p>
                             </a>
                         </li>
-                        <!-- Menu Pengaturan -->
+                        
                     </ul>
                 </nav>
             </div>

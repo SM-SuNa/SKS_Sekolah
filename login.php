@@ -71,7 +71,7 @@ if (isset($_POST['submit'])) {
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <img class="mx-auto custom-image" src="assets/img/neper.png" alt="Your Company">
-            <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in</h2>
+            <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Login</h2>
         </div>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -100,8 +100,8 @@ if (isset($_POST['submit'])) {
             </form>
 
             <p class="mt-10 text-center text-sm text-gray-500">
-                Not have an account?
-                <a href="register.php" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Sign up</a>
+                Belum punya akun?
+                <a href="register.php" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Daftar</a>
             </p>
         </div>
     </div>

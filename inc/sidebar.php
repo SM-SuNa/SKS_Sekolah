@@ -188,20 +188,6 @@
                                 <p>Laporan</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="?page=device" class="nav-link">
-                                <i class="nav-icon fas fa-cogs"></i>
-                                <p>Daftar Perangkat</p>
-                            </a>
-                        </li>
-                        <!-- Menu Pengaturan -->
-                        <li class="nav-header">PENGATURAN</li>
-                        <li class="nav-item">
-                            <a href="?page=pengaturan" class="nav-link">
-                                <i class="nav-icon fas fa-cog"></i>
-                                <p>Pengaturan</p>
-                            </a>
-                        </li>
                     </ul>
                 </nav>
             </div>
